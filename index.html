@@ -1,0 +1,235 @@
+<html>
+    <head>
+        <title>gmi web flow</title> 
+        <style>
+            .error {
+                border: 1px solid red;
+            }
+            .success {
+                border: 1px solid #eaeaea;
+            }
+        </style>       
+    </head>
+    <body>
+        <div id="container1">
+            gmi webflow form <br/>
+        <form id="wf-form-Trial-form" name="wf-form-Trial-form" method="POST">
+            name:<input type="text" id="name-form" name="Name-form" class="campo" value="">
+            surname:<input type="text" id="Cognome-form" name="Cognome-form" class="campo" value="">
+            email:<input type="text" id="Mail-form" name="Mail-form" class="campo" value="">
+            <input type="submit" value="Try for 7 days" class="w-button">
+        </form>
+        gmi webflow form 2<br/>
+        <form id="wf-form-Trial-form" name="wf-form-Trial-form" method="POST">
+            name:<input type="text" id="name-form" name="Name-form" class="campo" value="">
+            surname:<input type="text" id="Cognome-form" name="Cognome-form" class="campo" value="">
+            email:<input type="text" id="Mail-form" class="campo" name="Mail-form" value="">
+            <input type="submit" value="Try for 7 days" class="w-button">
+        </form>
+        gmi webflow form 3<br/>
+        <form id="wf-form-Trial-form" name="wf-form-Trial-form" method="POST">
+            name:<input type="text" id="name-form" name="Name-form" class="campo" value="">
+            surname:<input type="text" id="Cognome-form" name="Cognome-form" class="campo" value="">
+            email:<input type="text" id="Mail-form" class="campo" name="Mail-form" value="">
+            <input type="submit" value="Try for 7 days" class="w-button">
+        </div>
+        <div id="container2"></div>
+        </form>
+    </body>
+</html>
+<script>
+    
+    const firstNameEl = document.getElementById("name-form");
+    const lastNameEl = document.getElementById("Cognome-form");
+    const emailEl = document.getElementById("Mail-form");
+
+    const firstNameEl2 = document.getElementsByName("Name-form")[1];
+    const lastNameEl2 = document.getElementsByName("Cognome-form")[1];
+    const emailEl2 = document.getElementsByName("Mail-form")[1];
+
+    const firstNameEl3 = document.getElementsByName("Name-form")[2];
+    const lastNameEl3 = document.getElementsByName("Cognome-form")[2];
+    const emailEl3 = document.getElementsByName("Mail-form")[2];
+
+    const showError = (input) => {
+        
+        const formField = input;
+        formField.classList.remove('success');
+        formField.classList.add('error');
+
+    };
+
+    const showSuccess = (input) => {
+        
+        const formField = input;
+        
+        formField.classList.remove('error');
+        formField.classList.add('success');        
+        
+    }
+
+    const isEmailValid = (email) => {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return email.match(re);
+    };
+
+    function checkFirstName(firstName){
+        let valid = false;
+        
+        if(firstName.value.trim() == ''){
+            showError(firstName);
+        }else{
+            showSuccess(firstName);
+            valid = true;
+        }
+        return valid;
+    }
+
+    function checkLastName(lastName){
+        let valid = false;
+        
+        if(lastName.value.trim() == ''){
+            showError(lastName);
+        }else{
+            showSuccess(lastName);
+            valid = true;
+        }
+        return valid;
+    }
+
+    function checkEmail(email){
+        let valid = false;        
+         
+        if(email.value.trim() == ''){
+            showError(email);
+        }else if(!isEmailValid(email.value.trim())){
+            showError(email);
+        }else{
+            showSuccess(email);
+            valid = true;
+        }
+        return valid;
+    }
+
+    document.getElementById("wf-form-Trial-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://4126-203-189-253-74.ngrok-free.app/auth");
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        
+        const firstName = firstNameEl.value.trim();
+        const lastName = lastNameEl.value.trim();
+        const email = emailEl.value.trim();
+                   
+        let isFirstnameValid = checkFirstName(firstNameEl),
+        isLastnameValid = checkLastName(lastNameEl),
+        isEmailValid = checkEmail(emailEl);
+        
+        let isFormValid = isFirstnameValid &&
+        isLastnameValid &&
+        isEmailValid;
+
+        if(isFormValid){
+            xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+                if(xhr.status === 400){
+                    emailEl.after(JSON.parse(xhr.responseText).message)
+                }
+            }};
+
+            let data = {
+            "action": "signup",
+            "email": email,
+            "nicename": firstName,
+            "surName": lastName
+            };
+
+            xhr.send(JSON.stringify(data));
+        }
+        
+    });
+
+    document.forms[1].addEventListener("submit", function (event) {
+        event.preventDefault();        
+                
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://4126-203-189-253-74.ngrok-free.app/auth");
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        
+        const firstName = firstNameEl2.value.trim();
+        const lastName = lastNameEl2.value.trim();
+        const email = emailEl2.value.trim();
+                   
+        let isFirstnameValid = checkFirstName(firstNameEl2),
+        isLastnameValid = checkLastName(lastNameEl2),
+        isEmailValid = checkEmail(emailEl2);
+        
+        let isFormValid = isFirstnameValid &&
+        isLastnameValid &&
+        isEmailValid;
+
+        if(isFormValid){
+            xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+            }};
+
+            let data = {
+            "action": "signup",
+            "email": email,
+            "nicename": firstName,
+            "surName": lastName
+            };
+
+            xhr.send(JSON.stringify(data));
+        }
+        
+    });
+
+    document.forms[2].addEventListener("submit", function (event) {
+        event.preventDefault();        
+                
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://4126-203-189-253-74.ngrok-free.app/auth");
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        
+        const firstName = firstNameEl3.value.trim();
+        const lastName = lastNameEl3.value.trim();
+        const email = emailEl3.value.trim();
+                   
+        let isFirstnameValid = checkFirstName(firstNameEl3),
+        isLastnameValid = checkLastName(lastNameEl3),
+        isEmailValid = checkEmail(emailEl3);
+        
+        let isFormValid = isFirstnameValid &&
+        isLastnameValid &&
+        isEmailValid;
+
+        if(isFormValid){
+            xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+            }};
+
+            let data = {
+            "action": "signup",
+            "email": email,
+            "nicename": firstName,
+            "surName": lastName
+            };
+
+            xhr.send(JSON.stringify(data));
+        }
+        
+    });
+
+    
+</script>
